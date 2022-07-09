@@ -9,9 +9,8 @@ from weatherapp.models import AppUser
 from django.core.mail import send_mail
 
 #form
-from weatherapp.forms import RegistrationForm
+from weatherapp.forms import RegistrationForm, LoginForm, ProfileUploadForm
 
-from weatherapp.forms import LoginForm
 
 # Create your views here.
 
@@ -130,6 +129,34 @@ def user_logout(request):
             }
         return render(request, template, context)
 
+def user_profile(request):
+    
+    if request.session.has_key('user_email'):
+        profile_form = ProfileUploadForm()
+        template = "users/show.html"
+        user = AppUser.objects.get(email = request.session['user_email'])
+        context = {
+            'form': profile_form, 
+            'user_data':user,
+            'page_content_title': 'User Profile',
+            'email' : user.email
+            }
+
+        if request.method == "POST":
+            user_post = ProfileUploadForm(request.FILES, request.POST)
+            if user_post.is_valid:
+                user_post.save()
+                return render(request, template, context)
+        else:
+            return render(request, template, context)
+    else:
+        lf = LoginForm()
+        template = "users/login.html"
+        context = {
+            'form':lf,
+            'msg_error': 'Please login first.'
+            }
+        return render(request, template, context)
 
 def user_index(request):
 

@@ -12,6 +12,13 @@ class LoginForm(forms.ModelForm):
 
         model = AppUser
 
+class ProfileUploadForm(forms.ModelForm):
+    class Meta:
+        fields = ('profile_pic',)
+        model = AppUser
+
+
+
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     class Meta:
